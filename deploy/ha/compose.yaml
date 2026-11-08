@@ -4,6 +4,7 @@ services:
   homeassistant:
     image: ghcr.io/home-assistant/home-assistant:2026.11.0
     container_name: homeassistant
+    logging: { driver: json-file, options: { max-size: 10m, max-file: "3" } }  # Docker keeps logs forever by default
     restart: unless-stopped
     ports: ["127.0.0.1:8123:8123"]
     networks: [edge]
@@ -32,6 +33,7 @@ services:
   cloudflared:
     image: cloudflare/cloudflared:2026.10.7
     container_name: hermes-cloudflared
+    logging: { driver: json-file, options: { max-size: 10m, max-file: "3" } }  # Docker keeps logs forever by default
     restart: unless-stopped
     command: ["tunnel", "--config", "/etc/cloudflared/config.yml", "--no-autoupdate", "run"]  # the tunnel id is in config.yml
     # Readiness for the watchdog on the host: the metrics server listens on 0.0.0.0 inside, published on loopback only.
