@@ -46,8 +46,8 @@ function Api([string]$method, [string]$path, $body = $null, [switch]$Optional) {
         if ($Optional) { Write-Host "  skipped ($method $path): $msg" -ForegroundColor Yellow; return $null }
         Write-Host "  FAILED ($method $path): $msg" -ForegroundColor Red; $script:failed++; return $null
     }
-    if ($out) { try { return ($out | Out-String | ConvertFrom-Json) } catch { return $null } }
-    return $null
+    if ($out) { try { return ($out | Out-String | ConvertFrom-Json) } catch { } }
+    return $true   # success with an empty (204) reply
 }
 function Ok([string]$what) { Write-Host "  ok: $what" -ForegroundColor Green }
 
