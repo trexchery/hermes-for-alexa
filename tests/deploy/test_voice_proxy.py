@@ -165,3 +165,17 @@ def test_flood_of_silent_connections_gets_503_when_full(monkeypatch):
         for s in held:
             s.close()
         srv.shutdown()
+
+
+def test_successful_requests_are_not_logged(capsys):
+    """Health checks every 2 minutes must not grow the log forever; failures still log."""
+    from http import HTTPStatus
+    from deploy import voice_proxy
+    handler_cls = voice_proxy.make_handler("k", "u", ("127.0.0.1", 1))
+    h = handler_cls.__new__(handler_cls)
+    h.requestline, h.client_address, h.request_version, h.command = "GET /health HTTP/1.1", ("127.0.0.1", 1), "HTTP/1.1", "GET"
+    h.log_request(200)
+    h.log_request(HTTPStatus.OK)
+    assert capsys.readouterr().err == ""
+    h.log_request(502)
+    assert "502" in capsys.readouterr().err

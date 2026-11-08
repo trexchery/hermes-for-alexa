@@ -76,6 +76,12 @@ def make_handler(client_key: str, upstream_key: str, upstream: tuple[str, int] =
         timeout = 30  # socket timeout: a stalled client frees its thread
         sys_version = ""
 
+        def log_request(self, code="-", size="-"):
+            # Only failures are worth a line: health checks every 2 minutes would grow the log forever.
+            if str(int(code) if isinstance(code, int) else code).isdigit() and int(code) < 400:
+                return
+            super().log_request(code, size)
+
         def do_GET(self):
             self._route("GET")
 
