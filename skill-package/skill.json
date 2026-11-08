@@ -1,0 +1,41 @@
+{
+  "manifest": {
+    "manifestVersion": "1.0",
+    "publishingInformation": {
+      "locales": {
+        "en-US": {
+          "name": "Hermes",
+          "summary": "Talk to the Hermes assistant that runs your house.",
+          "description": "Ask Hermes questions or tell it what to do around the house. Personal skill, development stage.",
+          "examplePhrases": [
+            "Alexa, open hermes",
+            "Alexa, ask hermes please turn on the lights",
+            "Alexa, ask hermes tell me the news"
+          ]
+        }
+      },
+      "isAvailableWorldwide": false,
+      "distributionCountries": ["US"],
+      "distributionMode": "PRIVATE",
+      "category": "ORGANIZERS_AND_ASSISTANTS",
+      "testingInstructions": "Personal development-stage skill; not submitted for certification."
+    },
+    "apis": {
+      "custom": {
+        "endpoint": {"uri": "__LAMBDA_ARN__"},
+        "interfaces": [{"type": "ALEXA_PRESENTATION_APL"}]
+      }
+    },
+    "permissions": [{"name": "alexa::person_id:read"}],
+    "privacyAndCompliance": {
+      "allowsPurchases": false,
+      "usesPersonalInfo": true,
+      "isChildDirected": false,
+      "isExportCompliant": true,
+      "containsAds": false,
+      "locales": {
+        "en-US": {"privacyPolicyUrl": "__PRIVACY_POLICY_URL__"}
+      }
+    }
+  }
+}

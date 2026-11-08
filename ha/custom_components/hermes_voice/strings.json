@@ -1,0 +1,78 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect a Hermes profile",
+        "description": "Point at the API server of one Hermes profile. Standalone gateway: http://HOST:PORT/v1. Multiplexed gateway: http://HOST:8642/p/PROFILE/v1. Home Assistant in Docker on the same Mac/PC reaches the host as host.docker.internal.",
+        "data": {
+          "base_url": "Gateway base URL",
+          "api_key": "API key (API_SERVER_KEY of that profile)",
+          "display_name": "Display name"
+        },
+        "data_description": {
+          "base_url": "/v1 is added if missing.",
+          "display_name": "Defaults to the profile name Hermes advertises."
+        }
+      },
+      "reauth_confirm": {
+        "title": "Hermes rejected the API key",
+        "data": {
+          "api_key": "API key"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not reach the Hermes gateway at that URL.",
+      "invalid_auth": "Hermes rejected the API key.",
+      "invalid_url": "Enter a full http(s) URL.",
+      "no_models": "The gateway answered but advertised no model.",
+      "insecure_url": "Plain http is only allowed to this machine, host.docker.internal or a private IP address. Use https for anything else."
+    },
+    "abort": {
+      "already_configured": "This gateway URL is already configured.",
+      "reauth_successful": "API key updated."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Hermes Voice options",
+        "data": {
+          "session_mode": "Session mode",
+          "idle_reset_minutes": "Idle reset (per device mode)",
+          "user_key": "Memory scope key (optional)",
+          "voice_cleanup": "Clean replies for speech",
+          "voice_instruction": "Voice instruction (system message)",
+          "fallback_message": "Spoken fallback on errors",
+          "timeout": "Timeout",
+          "stream": "Stream replies",
+          "working_phrase": "Working phrase",
+          "send_time": "Tell Hermes the date and time",
+          "avoid_name": "Don't say the name aloud",
+          "alexa_bridge": "Serve the Alexa bridge"
+        },
+        "data_description": {
+          "session_mode": "Per conversation: one Hermes session per Assist conversation (Home Assistant ends a conversation after 5 minutes of silence). Per device: one session per voice device that continues until it has been idle for the reset time.",
+          "idle_reset_minutes": "Only used in per device mode.",
+          "user_key": "Sent as X-Hermes-Session-Key. Used by Hermes memory providers that scope memory per user (for example Honcho). Placeholders: {user_id}, {device_id}. Leave empty to disable.",
+          "voice_cleanup": "Strip markdown, code, links, emoji and tables before text-to-speech.",
+          "voice_instruction": "Added as a system message on every turn. It does not replace the profile's SOUL.md personality.",
+          "fallback_message": "Spoken instead of raw error text when Hermes is rate limited, slow or unreachable.",
+          "stream": "Start speaking while Hermes is still writing (needs a text-to-speech engine that supports streaming, such as Piper via Wyoming).",
+          "working_phrase": "Said when Hermes starts a tool (web search, ...) before saying anything else, so a slow answer does not start with silence. Leave empty to turn off. Needs Stream replies.",
+          "send_time": "Adds Home Assistant's local date and time to the system message on every turn, so Hermes can answer \"what time is it?\" and date questions. Hermes has no clock of its own.",
+          "avoid_name": "Spoken replies say \"the agent\" instead of \"Hermes\" (\"the latest agent release\"; \"Hey Hermes\" becomes \"the wake word\"). An Echo running the \"Hey Hermes\" wake word on microWakeWord keeps listening while it speaks and wakes itself when it hears the name. Needs \"Clean replies for speech\".",
+          "alexa_bridge": "Answer the Alexa skill (POST /api/hermes_voice/alexa/v1/turn) with this Hermes profile. Leave off everywhere to use the first loaded entry."
+        }
+      }
+    }
+  },
+  "selector": {
+    "session_mode": {
+      "options": {
+        "per_conversation": "Per conversation",
+        "per_device": "Per device (idle window)"
+      }
+    }
+  }
+}

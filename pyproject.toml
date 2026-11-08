@@ -1,0 +1,13 @@
+[project]
+name = "hermes-for-alexa"
+version = "0.1.0"
+description = "A Windows-hosted, whole-house Hermes AI voice assistant integrating Amazon Echo devices, Alexa Skills, AWS Lambda, and Home Assistant."
+requires-python = ">=3.11"
+
+[project.optional-dependencies]
+test = ["pytest>=8", "aiohttp"]
+deploy = ["boto3[crt]>=1.35", "websockets>=13"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

@@ -1,0 +1,8 @@
+# Mounted read-only by compose.yaml. HA's UI settings live in /config/.storage, not here.
+default_config:
+
+# http: (reverse proxy, ip_ban) is NOT set here: HA >= 2026.11 stores it and ignores YAML after a
+# one-time import. deploy/bootstrap_ha.py sets and promotes it over the admin websocket.
+
+logger:
+  default: warning

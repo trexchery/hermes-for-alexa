@@ -1,0 +1,58 @@
+# Home Assistant for the Alexa voice chain. Run from this directory:  docker compose up -d
+# HA is published on loopback only: the Cloudflare tunnel and the Hermes custom component are the only ways in.
+services:
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:2026.11.0
+    container_name: homeassistant
+    restart: unless-stopped
+    ports: ["127.0.0.1:8123:8123"]
+    networks: [edge]
+    environment:
+      TZ: ${HA_TZ:-UTC}
+    # So the hermes_voice component can reach the Hermes api_server running on the Windows host.
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    volumes:
+      # /config lives in a named volume (ext4 inside WSL: fast, safe SQLite locking).
+      - ha_config:/config
+      # Our config is mounted read-only over the one HA would generate.
+      - ./configuration.yaml:/config/configuration.yaml:ro
+      # Only the vendored component is bind-mounted, read-only: edits in the repo apply on the next
+      # `docker restart homeassistant`, and the volume can be recreated without losing the component
+      # (docker cp would have to be repeated and leaves a stale copy behind).
+      - ../../ha/custom_components/hermes_voice:/config/custom_components/hermes_voice:ro
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8123/manifest.json"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
+  # The only sender HA trusts X-Forwarded-For from (trusted_proxies = this one /32, deploy/bootstrap_ha.py).
+  # On Docker Desktop every container and host process otherwise reaches HA from the same gateway IP.
+  # Needs ~/.hermes-tunnel/config.yml and deploy/ha/.env (HERMES_TUNNEL_ID), both written by `python -m deploy.tunnel_setup`.
+  cloudflared:
+    image: cloudflare/cloudflared:2026.10.7
+    container_name: hermes-cloudflared
+    restart: unless-stopped
+    command: ["tunnel", "--config", "/etc/cloudflared/config.yml", "--no-autoupdate", "run"]  # the tunnel id is in config.yml
+    # Readiness for the watchdog on the host: the metrics server listens on 0.0.0.0 inside, published on loopback only.
+    ports: ["127.0.0.1:20251:20251"]
+    networks:
+      edge:
+        ipv4_address: 172.30.77.2
+    depends_on: [homeassistant]
+    volumes:
+      - type: bind
+        source: ${USERPROFILE}/.hermes-tunnel/config.yml
+        target: /etc/cloudflared/config.yml
+        read_only: true
+      - type: bind
+        source: ${USERPROFILE}/.cloudflared/${HERMES_TUNNEL_ID:?run python -m deploy.tunnel_setup}.json
+        target: /etc/cloudflared/credentials.json
+        read_only: true
+networks:
+  edge:
+    ipam:
+      # Dynamic addresses come from the upper half, so the fixed .2 of cloudflared is never taken by another container.
+      config: [{subnet: 172.30.77.0/24, ip_range: 172.30.77.128/25}]
+volumes:
+  ha_config: {}

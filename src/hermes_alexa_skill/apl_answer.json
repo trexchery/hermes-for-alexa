@@ -1,0 +1,45 @@
+{
+  "type": "APL",
+  "version": "2024.3",
+  "theme": "dark",
+  "mainTemplate": {
+    "parameters": ["payload"],
+    "items": [
+      {
+        "type": "Container",
+        "width": "100vw",
+        "height": "100vh",
+        "paddingLeft": "5vw",
+        "paddingRight": "5vw",
+        "paddingTop": "4vh",
+        "paddingBottom": "4vh",
+        "items": [
+          {
+            "type": "Text",
+            "when": "${payload.data.room != ''}",
+            "text": "${payload.data.room}",
+            "fontSize": "20dp",
+            "color": "#9AA5B1",
+            "maxLines": 1
+          },
+          {
+            "type": "Text",
+            "when": "${payload.data.question != ''}",
+            "text": "${payload.data.question}",
+            "fontSize": "24dp",
+            "fontWeight": "bold",
+            "maxLines": 3,
+            "paddingBottom": "2vh"
+          },
+          {
+            "type": "ScrollView",
+            "grow": 1,
+            "items": [
+              {"type": "Text", "text": "${payload.data.answer}", "fontSize": "30dp"}
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

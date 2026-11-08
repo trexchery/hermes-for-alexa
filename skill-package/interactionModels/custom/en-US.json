@@ -1,0 +1,49 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "hermes",
+      "intents": [
+        {"name": "AMAZON.CancelIntent", "samples": []},
+        {"name": "AMAZON.HelpIntent", "samples": []},
+        {"name": "AMAZON.StopIntent", "samples": []},
+        {"name": "AMAZON.NavigateHomeIntent", "samples": []},
+        {"name": "AMAZON.FallbackIntent", "samples": []},
+        {"name": "AMAZON.NoIntent", "samples": []},
+        {"name": "AMAZON.YesIntent", "samples": []},
+        {
+          "name": "ContinueIntent",
+          "slots": [],
+          "samples": [
+            "what did you find",
+            "continue",
+            "go on",
+            "keep going",
+            "did you find anything",
+            "any news"
+          ]
+        },
+        {
+          "name": "HermesQueryIntent",
+          "slots": [{"name": "query", "type": "AMAZON.SearchQuery"}],
+          "samples": [
+            "ask {query}",
+            "ask hermes {query}",
+            "tell hermes {query}",
+            "hermes {query}",
+            "tell me {query}",
+            "please {query}",
+            "{query} please",
+            "can you {query}",
+            "could you {query}",
+            "i want to {query}",
+            "i would like to {query}",
+            "i need to know {query}",
+            "let me know {query}",
+            "do you know {query}"
+          ]
+        }
+      ],
+      "types": []
+    }
+  }
+}

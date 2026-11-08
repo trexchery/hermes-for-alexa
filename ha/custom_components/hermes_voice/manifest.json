@@ -1,0 +1,18 @@
+{
+  "domain": "hermes_voice",
+  "name": "Hermes Voice",
+  "codeowners": [
+    "@0xdippo"
+  ],
+  "config_flow": true,
+  "dependencies": [
+    "conversation",
+    "http"
+  ],
+  "documentation": "https://github.com/majorminorlabs/hermes-voice",
+  "integration_type": "service",
+  "iot_class": "local_polling",
+  "issue_tracker": "https://github.com/trexchery/hermes-for-alexa/issues",
+  "requirements": [],
+  "version": "0.2.0"
+}
